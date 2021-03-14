@@ -1,0 +1,23 @@
+class Solution:
+    def maximumScore(self, nums: List[int], k: int) -> int:
+        
+        '''
+        start from nums[k]
+        expand on the side that is larger
+        '''
+        n = len(nums)
+        i=j=k
+        
+        best = currmin = nums[k]
+        while i >= 0 or j <= n-1:
+            if i == 0 and j == n-1: break
+            if i == 0 or (i > 0 and j < n-1 and nums[i-1] < nums[j+1]):
+                j += 1
+                currmin = min(currmin, nums[j])
+                best = max(best, (j-i+1) * currmin)
+            else:
+                i -= 1
+                currmin = min(currmin, nums[i])
+                best = max(best, (j-i+1) * currmin)
+                
+        return best
