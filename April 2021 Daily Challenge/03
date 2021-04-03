@@ -1,0 +1,41 @@
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        #find all () or (()) or (()) type substrings
+        #find longest continuous group of such substrings
+        n = len(s)
+        groups = []
+        stack = []
+        currgroupstart = 0
+        for i, paren in enumerate(s):
+            if paren == "(":
+                if currgroupstart < i-1:
+                    groups.append([currgroupstart, i-1])
+                stack.append(("(", i))
+                currgroupstart = i
+            else:
+                if paren == ")":
+                    if stack:
+                        _, lastopen = stack.pop()
+                        currgroupstart = lastopen
+                    else:
+                        if currgroupstart < i-1:
+                            groups.append([currgroupstart, i-1])
+                        currgroupstart = i+1
+        if n and s[-1] == ")" and currgroupstart < n-1:
+            groups.append([currgroupstart, n-1])
+
+        groups.sort()
+        best = 0
+        currgroup = None
+        for group in groups:
+            if not currgroup:
+                currgroup = group
+            # two adjacent valid groups:
+            elif currgroup and (group[0] == currgroup[1] + 1):
+                currgroup[1] = group[1]
+            elif currgroup and (group[0] > currgroup[1] + 1):
+                best = max(best, currgroup[1]-currgroup[0]+1)
+                currgroup = group
+        if currgroup:
+            best = max(best, currgroup[1]-currgroup[0]+1)
+        return best
