@@ -1,0 +1,26 @@
+class Solution:
+    def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
+        # helper to count zeros and ones in strs[i]
+        def count(s):
+            zeros = ones = 0
+            for char in s:
+                if char == "0":
+                    zeros += 1
+                elif char == "1":
+                    ones += 1
+            return (zeros, ones)
+    
+        states = set()
+        #initially, we have a subset of size 0, and we can still add m 0's and n 1's
+        states.add((0, m, n))   #(size of subset, num "0" slots remaining, num "1" slots remaining)
+        
+        #try including each string in each previous valid subsets 
+        for s in strs:
+            zeros, ones = count(s)
+            nextstates = set()
+            for state in states:
+                if state[1] >= zeros and state[2] >= ones:
+                    nextstates.add((state[0] + 1, state[1] - zeros, state[2] - ones))
+            states.update(nextstates)
+        
+        return max(state[0] for state in states)
