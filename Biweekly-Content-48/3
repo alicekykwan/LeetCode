@@ -1,9 +1,0 @@
-class Solution:
-    def getMaximumConsecutive(self, coins: List[int]) -> int:
-        coins.sort()
-        currpossible = 0
-        for coin in coins:
-            if currpossible+1 < coin:
-                break
-            currpossible += coin
-        return currpossible+1
