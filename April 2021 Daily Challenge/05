@@ -1,0 +1,20 @@
+class Solution:
+    def isIdealPermutation(self, A: List[int]) -> bool:
+        '''
+        ideal permutation: i = A[i]
+        [0, 1, 2, 3, 4, 5]
+        inversions occur when you swap two elements
+        if the two elemnts swapped are more than 1 distance apart,
+        you have more global than local inversions
+        '''
+        
+        n = len(A)
+        i = 0
+        while i < n:
+            if i == A[i]:
+                i += 1
+            elif A[i] == i+1 and i == A[i+1]:
+                i += 2
+            else:
+                return False
+        return True
