@@ -1,0 +1,26 @@
+class Solution:
+    def maxValue(self, n: int, index: int, maxSum: int) -> int:
+        '''
+        adjust maxSum so that I can go down to 0 (add 1 back to everything at the end)
+        all values to the left and right of nums[index] are decreasing away from index (due to maxSum constrain)
+        binray search for ans
+        
+        '''
+        maxSum -= n
+        leftct = index
+        rightct = n-index-1
+        best = 0
+        def sumab(y, x):
+            return (1+y)*y//2 - (x)*(x-1)//2
+        
+        a = 0
+        b = maxSum+1
+        while a + 1 < b:
+            mid = (a+b)//2
+            left = sumab(mid, max(1, mid-leftct))     
+            right = sumab(mid, max(1, mid-rightct))
+            if left + right - mid <= maxSum:
+                a = mid
+            else:
+                b = mid
+        return a+1
