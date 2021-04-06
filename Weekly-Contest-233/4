@@ -1,0 +1,75 @@
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.ct = 0
+
+
+class Solution:
+    def countPairs(self, nums: List[int], low: int, high: int) -> int:
+        '''
+        # find the num with most bits
+        # add each num to a Trie (largest bit closest to the root), 
+            add to the count of each TrieNode as you descend
+        # for each num, 
+        descend the Trie according to what the partner bit needs to be 
+        in order for the XOR sum of num and partner num to match that of X
+        (num bit ^ partner bit = X bit)
+            at each bit
+                - add to the answer count the number of partner number where the XOR sum is below X
+                (this is only possible if bit in X is set, and bit in num and bit in partner num match)
+                - next partner bit = X bit ^ num bit 
+        '''
+        
+        
+        bits = max(max(nums), high).bit_length()
+        root = TrieNode()
+        curr = root
+
+        for num in nums:
+            curr = root
+            for i in range(bits-1, -1, -1):
+                curr.ct += 1
+                b = (num >> i) & 1
+                if b not in curr.children:
+                    curr.children[b] = TrieNode()
+                curr = curr.children[b]
+            curr.ct += 1
+        
+        def XOR_with_num_below_or_equal_X(num, X):
+            '''
+            
+            if lim bit is set:
+                add to total ct of partner bit being opposite num (XOR total 0)
+                this adds num ^ other < lim
+            num ^ other ^ lim does not have bit (equal case)
+            other bit = num bit ^ lim bit
+            curr must continue in the direction of num bit ^ lim bit
+            if ever leave the trie just stop (other becomes impossible)
+            
+            at the end, if we are at a bucket num ^ other ^ lim = 0 meaning num ^ other = lim
+            so to count the equal cases add curr bucket
+                    
+            '''
+
+            curr = root
+            total = 0
+            for i in range(bits-1, -1, -1):
+                a = (X>>i) & 1 #whether the ith bit in X is 1 or 0
+                b = (num>>i) & 1 #whether the ith bit in num is 1 or 0
+                partner = a^b #what partner bit needs to be to have all three XOR to be 0
+                if a == 1: # if X bit is set, count all ways to stay below X
+                    # partner = num is what would make the bit not set
+                    total += curr.children[b].ct if b in curr.children else 0
+                # to match the bit in X  - numbit ^ otherbit = Xbit    otherbit = Xbit ^ numbit  
+                if partner not in curr.children:
+                    return total
+                curr = curr.children[partner]
+            total += curr.ct
+            return total
+                
+        
+        res = 0
+        for num in nums:
+            res += XOR_with_num_below_or_equal_X(num, high) - XOR_with_num_below_or_equal_X(num, low-1)
+        
+        return res//2
