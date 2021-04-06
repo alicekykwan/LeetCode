@@ -1,0 +1,35 @@
+class Solution:
+    def getNumberOfBacklogOrders(self, orders: List[List[int]]) -> int:
+        '''
+        sell price heap - lowest at the top
+        buy price heap - highest price at the top
+        '''
+        sellheap = []
+        buyheap = []
+        for order in orders:
+            price, amount, order_type = order
+            if order_type == 0: #buy order
+                while amount and sellheap and sellheap[0][0] <= price:
+                    sellprice, sellamount = heappop(sellheap)
+                    if amount >= sellamount:
+                        amount -= sellamount
+                    else:
+                        sellamount -= amount
+                        amount = 0
+                        heappush(sellheap, (sellprice, sellamount))
+                if amount:
+                    heappush(buyheap, (-price, amount))
+            
+            elif order_type == 1:
+                while amount and buyheap and -buyheap[0][0] >= price:
+                    buyprice, buyamount = heappop(buyheap)
+                    if amount >= buyamount:
+                        amount -= buyamount
+                    else:
+                        buyamount -= amount
+                        amount = 0
+                        heappush(buyheap, (buyprice, buyamount))
+                if amount:
+                    heappush(sellheap, (price, amount))
+
+        return (sum(s[1] for s in sellheap) + sum(b[1] for b in buyheap)) % (10**9 + 7)
