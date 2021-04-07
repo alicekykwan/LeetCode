@@ -1,0 +1,8 @@
+class Solution:
+    def numDifferentIntegers(self, word: str) -> int:
+        segs = re.split('[a-zA-Z]+', word)
+        diff_int = set()
+        for seg in segs:
+            if seg:
+                diff_int.add(int(seg))
+        return len(diff_int)
