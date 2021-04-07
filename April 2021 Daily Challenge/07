@@ -1,0 +1,11 @@
+class Solution:
+    def halvesAreAlike(self, s: str) -> bool:
+        isVowel = []
+        for char in s:
+            if char in 'aeiouAEOIU':
+                isVowel.append(1)
+            else:
+                isVowel.append(0)
+        
+        n = len(s)
+        return sum(isVowel[:n//2]) == sum(isVowel[n//2:])
