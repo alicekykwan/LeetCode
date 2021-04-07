@@ -1,0 +1,36 @@
+class Solution:
+    def maxNiceDivisors(self, primeFactors: int) -> int:
+        '''
+        first, notice that the number of nice divisors = product of powers of prime factors
+        e.g. 2^3 * 3^5 * 5^2 has 3*5*2 nice divisors.
+        Problem translates to finding a list of positive integers with the given sum "primeFactors"
+        and with the maximum product.
+        
+        The optimal list would never have 1 (unless primeFactors = 1)
+        because combining with any other element improves the product: 1 * x < x + 1
+        The optimal list would never have any element >= 4,
+        because splitting into 2 and x always improves the product: 2 * x > 2 + x
+        This means our list would only have 2 and 3.
+        However, our list would never have three 2's because replacing them with two 3's always improves the product:
+        8 = 2 * 2 * 2 < 3 * 3 = 9
+        
+        At this point we could try having zero 2's, one 2's and two 2's, but since
+        adding threes does not affect remainder modulo 3, this "choice" is already forced
+        by what primeFactors modulo 3 is.
+        0 modulo 3 => zero 2's
+        1 modulo 3 => two 2's (if possible)
+        2 modulo 3 => one 2.
+        '''
+        
+        M = 10**9 + 7
+        p = primeFactors
+        if p == 1:
+            return 1
+        if p%3 == 0:
+            return pow(3, p//3, M)
+        elif p%3 == 1:
+            return (4 * pow(3, (p-4)//3, M)) % M
+        else:
+            return (2 * pow(3, (p-2)//3, M)) % M 
+        
+        
