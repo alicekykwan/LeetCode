@@ -1,0 +1,27 @@
+class Solution:
+    def maxHappyGroups(self, batchSize: int, groups: List[int]) -> int:
+        '''
+        mod each group size by the batchSize
+        put all group sizes into a Counter
+        try all combinations - there are at most 9 group sizes with 30 groups total
+        
+        '''
+        groups = [g%batchSize for g in groups]
+        c = Counter(groups)
+        remaining = [c[i] for i in range(batchSize)]
+        
+        @lru_cache(None)
+        def numhappy(remaining, currmod):
+            if sum(remaining) == 0: #no groups left
+                return 0
+            best = 0 
+            remaining = list(remaining)
+            for groupsize, numgroup in enumerate(remaining):
+                if numgroup:
+                    remaining[groupsize] -= 1
+                    newmod = (currmod + groupsize) % batchSize
+                    best = max(best, numhappy(tuple(remaining), newmod))
+                    remaining[groupsize] += 1
+            return best + (0 if currmod else 1)
+        
+        return numhappy(tuple(remaining), 0)
