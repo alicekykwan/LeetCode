@@ -1,0 +1,20 @@
+class Solution:
+    def countNicePairs(self, nums: List[int]) -> int:
+        '''
+        nums[i] - rev(nums[i]) = nums[j] - rev(nums[j])
+        '''
+        
+        def rev(x):
+            return int(str(x)[::-1])
+        
+        M = 10**9 + 7
+        c = Counter()
+        
+        for num in nums:
+            c[num - rev(num)] += 1
+        
+        ans = 0 
+        for _, v in c.items():
+            ans += comb(v, 2)
+            ans %= M
+        return ans % M 
