@@ -1,0 +1,39 @@
+class Solution:
+    def areSentencesSimilar(self, sentence1: str, sentence2: str) -> bool:
+        '''
+        make sentence1 the longer one (if they are equal length, need to be identical)
+        turn both to lists
+        encode sentence 1 as match(1) or notmatch(0) with words from sentence 2
+        encoded array needs have only 1 continuous segment of 0
+        '''
+        
+        n = len(sentence1)
+        m = len(sentence2)
+        if n == m: return sentence1 == sentence2
+        if m > n:
+            sentence1, sentence2 = sentence2, sentence1
+            
+        s1 = sentence1.split(' ')
+        s2 = sentence2.split(' ')
+        n = len(s1)
+        m = len(s2)
+        matched = [0] * n
+        
+        def trymatch(i, j, matched):
+            if j >= m:
+                g = groupby(matched)
+                groups = [k for k,_ in g]
+                return groups.count(0) == 1
+            if i >= n:
+                return False
+            for k in range(i, n):
+                if s1[k] == s2[j]:
+                    matchedcopy = matched[:]
+                    matchedcopy[k] = 1
+                    res1 = trymatch(k+1, j+1, matchedcopy)
+                    if res1: return True
+                    res2 = trymatch(k+1, j, matched)
+                    if res2: return True
+                
+        return trymatch(0, 0, matched)
+        
