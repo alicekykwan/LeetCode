@@ -1,0 +1,39 @@
+from math import gcd
+class Solution:
+    def countDifferentSubsequenceGCDs(self, nums: List[int]) -> int:
+        limit = max(nums) + 1
+        
+        # spf[i] := smallest prime factor of i
+        spf = list(range(limit))
+        for p in range(2, limit):
+            if spf[p] < p: continue
+            # p is prime
+            for i in range(p, limit, p):
+                spf[i] = min(spf[i], p)
+
+        def _divisors(x):
+            divs = [1]
+            while x > 1:
+                p = spf[x]
+                cnt = 0
+                while x % p == 0:
+                    cnt += 1
+                    x //= p
+                # cnt copies of prime factor p
+                for i in range(len(divs)*cnt):
+                    divs.append(divs[i]*p)
+            return divs
+
+        # best[i] := gcd of all elements in nums that is divisible by i
+        best = [0] * limit
+        for num in set(nums):
+            for div in _divisors(num):
+                best[div] = gcd(best[div], num)
+
+        ans = 0
+        for i in range(1, limit):
+            if best[i] == i:
+                ans += 1
+        return ans
+        
+        
