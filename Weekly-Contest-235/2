@@ -1,0 +1,15 @@
+class Solution:
+    def findingUsersActiveMinutes(self, logs: List[List[int]], k: int) -> List[int]:
+        user_activity = defaultdict(set)
+        #key = user, value = set of active minutes
+        
+        for user, minute in logs:
+            user_activity[user].add(minute)
+        
+        ans = [0] * k
+        
+        for user, minutes in user_activity.items():
+            if len(minutes) <= k:
+                ans[len(minutes)-1] += 1
+        
+        return ans
