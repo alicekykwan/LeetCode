@@ -1,0 +1,37 @@
+class Solution:
+    def minAbsoluteSumDiff(self, nums1: List[int], nums2: List[int]) -> int:
+        '''
+        [1, 2, 3, 100]
+        [1, 2, 7, 500]
+        You don't always replace the largest diff
+        must try everthing in nums1, 
+        binary search for the closest match to nums2 available in nums1
+        '''
+        avail = sorted(set(nums1))
+        n = len(avail)
+        def searchinnums1(num):
+            a = 0
+            b = n
+            while a + 1 < b:
+                mid = (a+b) // 2
+                if avail[mid] > num:
+                    b = mid
+                else:
+                    a = mid
+                    
+            #avail[a] is equal to or smaller than num
+            #avail[b] (if b < n) is just above num
+            if a == n-1:
+                return avail[a]
+            if num-avail[a] < avail[b]-num:
+                return avail[a]
+            return avail[b]
+    
+        mostimproved = 0
+        for i in range(len(nums1)):
+            bestreplacement = searchinnums1(nums2[i])
+            improved = abs(nums1[i]-nums2[i]) - abs(bestreplacement-nums2[i])
+            mostimproved = max(mostimproved, improved)
+        
+        return (sum(abs(num1-num2) for num1, num2 in zip(nums1, nums2)) - mostimproved) % (10**9 + 7)
+        
