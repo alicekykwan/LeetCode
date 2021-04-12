@@ -1,0 +1,28 @@
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def deepestLeavesSum(self, root: TreeNode) -> int:
+        
+        ans = [0]
+        deepest = [0]
+        def dfs(node, d):
+            if not node: return
+            if not node.left and not node.right: 
+                if d > deepest[0]:
+                    deepest[0] = d
+                    ans[0] = node.val
+                elif d == deepest[0]:
+                    ans[0] += node.val
+                return
+                
+                
+            dfs(node.left, d+1)
+            dfs(node.right, d+1)
+        
+        dfs(root, 0)
+        return ans[0]
+            
