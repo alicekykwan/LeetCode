@@ -1,0 +1,34 @@
+class Solution:
+    def maxSumMinProduct(self, nums: List[int]) -> int:
+
+        def find_window_start(nums):
+            leftprefix = [0]    #leftprefix[i] = prefix sum of the first i elements (i.e. including nums[i-1] but excluding nums[i])
+            for num in nums:
+                leftprefix.append(num+leftprefix[-1])
+
+            leftstart = [] #window from leftstart[i] to i cantains nums[i] as the minimum
+            stack = [(-1, -1)]   #val, index
+            for i, num in enumerate(nums):
+                # if num is smaller than or equal to top of stack, pop until the top of stack is smaller
+                while num <= stack[-1][0]:
+                    stack.pop()
+                # num is larger than top of stack, leftstart[i] would be stack[-1][1]+1
+                leftstart.append(stack[-1][1] + 1)
+                stack.append((num, i))
+
+            leftsubarraysum = []
+            for i, start in enumerate(leftstart):
+                leftsubarraysum.append(leftprefix[i]-leftprefix[start])
+
+            return leftsubarraysum
+        
+        leftsubarraysum = find_window_start(nums)
+        rightsubarraysum = find_window_start(nums[::-1])
+        
+        n = len(nums)
+        subarraysums = [0]*n
+        for i in range(n):
+            subarraysums[i] = (leftsubarraysum[i] + rightsubarraysum[n-i-1] + nums[i]) *  nums[i]
+        return max(subarraysums) % (10**9 + 7)
+        
+        
