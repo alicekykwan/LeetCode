@@ -1,0 +1,36 @@
+class Solution:
+    def largestPathValue(self, colors: str, edges: List[List[int]]) -> int:
+        n = len(colors)
+        adj = [[] for _ in range(n)]
+        in_degrees = [0] * n
+        for u, v in edges:
+            adj[u].append(v)
+            in_degrees[v] += 1
+        
+        sources = [u for u, in_degree in enumerate(in_degrees) if in_degree == 0]
+        topo = []
+
+        while sources:
+            u = sources.pop()
+            topo.append(u)
+            for v in adj[u]:
+                in_degrees[v] -= 1
+                if in_degrees[v] == 0:
+                    sources.append(v)
+        if len(topo) != n:
+            return -1
+        topo.reverse()
+        
+        best = 0
+        color_set = set(list(colors))
+        for color in color_set:
+            f = [0] * n
+            for u in topo:
+                for v in adj[u]:
+                    f[u] = max(f[u], f[v])
+                if colors[u] == color:
+                    f[u] += 1
+            best = max(best, max(f))
+        
+        return best
+        
