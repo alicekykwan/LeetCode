@@ -1,0 +1,24 @@
+class Solution:
+    def maximumPopulation(self, logs: List[List[int]]) -> int:
+        '''
+        sort by birth year
+        pop death year at or before birth year
+        insert death year into heap
+        record size of heap
+        '''
+        
+        logs.sort()
+        h = []
+        best = 0
+        bestyear = None
+        
+        for b, d in logs:
+            while h and h[0] <= b:
+                heappop(h)
+            heappush(h, d)
+            if len(h) > best:
+                best = len(h)
+                bestyear = b
+        
+        return bestyear
+        
