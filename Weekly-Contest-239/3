@@ -1,0 +1,41 @@
+class Solution:
+    def getMinSwaps(self, num: str, k: int) -> int:
+        
+        n = len(num)
+        num = list(num)
+        
+        def findnextsmallest(num):
+            currlargest = num[-1]
+            for i in range(n-2, -1, -1):
+                if num[i] < currlargest:
+                    res = num[:]
+                    smallestlarger = (num[i+1], i+1)
+                    for j in range(i+1, n):
+                        if res[j] > res[i] and res[j] < smallestlarger[0]:
+                            smallestlarger = (res[j], j)
+                    res[i], res[smallestlarger[1]] = res[smallestlarger[1]], res[i]
+                    secondhalf = res[i+1:] 
+                    secondhalf.sort()
+                    res[i+1:] = secondhalf
+                    return res
+                else:
+                    if num[i] > currlargest:
+                        currlargest = num[i]
+            return num
+        
+        curr = num
+        for i in range(k):
+            curr = findnextsmallest(curr)
+        
+        swaps = 0
+        for i, digit in enumerate(curr):
+            if curr[i] != num[i]:
+                for j in range(i+1, n):
+                    if num[j] == curr[i]:
+                        shifted = num[i:j]
+                        num[i] = num[j]
+                        num[i+1:j+1] = shifted
+                        swaps += j-i
+                        break
+        return swaps
+        
