@@ -1,0 +1,25 @@
+class Solution:
+    def splitString(self, s: str) -> bool:
+
+        n = len(s)
+        
+        def findnextnum(startindex, target): 
+            for j in range(startindex+1, n+1):
+                currnum = int(s[startindex:j])
+                if currnum == target:
+                    return j
+        
+        for i in range(1, n):
+            first = s[:i]
+            firstnum = int(first)
+            nextstartindex = i
+            target = firstnum - 1
+            while nextstartindex < n:
+                nextstartindex = findnextnum(nextstartindex, target)
+                if not nextstartindex: break
+                if target == 0 and nextstartindex < n and  int(s[nextstartindex:]) == 0:
+                    return True
+                target -= 1
+            
+            if nextstartindex == n:
+                return True
