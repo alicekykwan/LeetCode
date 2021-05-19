@@ -1,0 +1,42 @@
+class Solution:
+    def maxBuilding(self, n: int, restrictions: List[List[int]]) -> int:
+
+        restrictions.append([1,0])        
+        restrictions.sort()
+        if restrictions[-1][0] != n:
+            restrictions.append([n,n-1])
+        n = len(restrictions)
+        left = []
+        minleft = float('inf')
+        right = []
+        minright = float('inf')
+        for x, y in restrictions:
+            leftintercept = -x+y
+            minleft = min(minleft, leftintercept)
+            left.append(minleft)
+        for x, y in reversed(restrictions):
+            rightintercept = x+y
+            minright = min(minright, rightintercept)
+            right.append(minright)
+        
+        right.reverse()
+        
+        best = 0
+        for i in range(n-1):
+            #forward line: y=x+left[i] -> x = y-left[i]
+            #reverse line: y=-x+right[i+1] -> x = right[i+1] - y
+            lx, rx = restrictions[i][0], restrictions[i+1][0]
+            
+            #check heights at lx and rx
+            best = max(best, min(lx+left[i], -lx+right[i+1]))
+            best = max(best, min(rx+left[i], -rx+right[i+1]))
+            
+            #check if there's an intersection between lx and rx
+            # set y's equal: x+left[i] = -x+right[i+1]  => 2x = right[i+1]-left[i] 
+            x = (right[i+1]-left[i]) // 2
+            if x > rx or x < lx: continue
+            # y-left[i] = right[i+1] - y
+            # y = (right[i+1] + left[i])//2
+            best = max(best, (right[i+1] + left[i])//2)
+        
+        return best
