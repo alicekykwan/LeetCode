@@ -1,0 +1,28 @@
+class Solution:
+    def longestBeautifulSubstring(self, word: str) -> int:
+        
+        allowed = {'a': set(['a', 'e']), 'e': set(['e', 'i']), 'i': set(['i', 'o']), 'o': set(['o', 'u']), 'u': set(['u'])}
+        
+        startindex = 0
+        curr = None
+        best = 0
+        for i, letter in enumerate(word):
+            if not curr and letter != 'a':
+                continue
+            elif not curr:
+                curr = letter
+                startindex = i
+            else: #there's a curr
+                if letter not in allowed[curr]:
+                    if letter == 'a':
+                        startindex = i
+                        curr = 'a'
+                    else:
+                        curr = None
+                        startindex = None
+                else:
+                    curr = letter
+                    if letter == 'u':
+                        best = max(best, i-startindex+1)
+        return best
+            
