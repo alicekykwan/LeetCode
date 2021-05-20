@@ -1,0 +1,12 @@
+class Solution:
+    def getXORSum(self, arr1: List[int], arr2: List[int]) -> int:
+
+        xorarr1 = 0
+        for num in arr1:
+            xorarr1 ^= num
+        
+        xorarr2 = 0
+        for num in arr2:
+            xorarr2 ^= num
+
+        return xorarr1 & xorarr2
