@@ -1,0 +1,89 @@
+class Fenwick:
+    def __init__(self, n):
+        self.n = n
+        self.f = [-float('inf')] * (n+1)
+    def add(self, size, roomId):
+        i = size + 1
+        while i <= self.n:
+            self.f[i] = max(self.f[i], roomId)
+            i += i&-i
+        #print('add', size, roomId)
+    def get(self, size): 
+        ans = -float('inf')
+        i = size
+        while i > 0:
+            ans = max(ans, self.f[i])
+            i -= i&-i
+        #print('get', size, ans)
+        return ans
+            
+    
+class Solution:
+    def closestRoom(self, rooms: List[List[int]], queries: List[List[int]]) -> List[int]:
+        
+        '''
+        let's return the closest room from the left of preferred, instead of closest room from both left and right for now
+        sort queries by preferred
+        for each preferred, minsize:
+            add all rooms to the left into a fenwick tree
+                fenwick tree stores the maximum room number for each size
+            f[minsize] = the maximum room number at or below size
+        
+        repeat going from right to left
+        reverse query
+        for each preferred, minsize:
+            add all the rooms to the right into a fenwick tree
+                fenwick tree stores the minimum room number for each size
+            f[minsize] = the minimum room number at or below size
+        
+        '''
+        sizes = set()
+        for _, size in rooms:
+            sizes.add(size)
+        for _, size in queries:
+            sizes.add(size)
+        
+        sizes = sorted(sizes, reverse=True)
+        sizes_d = {size: i for i, size in enumerate(sizes)}
+        
+        
+        queries = [[p,sizes_d[s], i] for i, (p, s) in enumerate(queries)]    
+        queries.sort()
+        
+        ans = [-1] * len(queries)
+        
+        rooms = [[roomnum, sizes_d[s]] for roomnum, s in rooms]
+        rooms.sort()
+        #print(rooms, queries)
+        
+        n = len(rooms)
+        i = 0 
+        f = Fenwick(len(sizes))
+        for preferred, minsize, queryId in queries:
+            while i < n and rooms[i][0] <= preferred:
+                roomId, size = rooms[i]
+                f.add(size, roomId)
+                i += 1
+            if i == 0: continue
+            roomtotheleft = f.get(minsize+1)
+            if roomtotheleft == -float('inf'): continue
+            ans[queryId] = roomtotheleft
+        #print(ans)
+        
+        queries.reverse()
+        rooms.reverse()
+        i = 0
+        f2 = Fenwick(len(sizes))
+        for preferred, minsize, queryId in queries:
+            while i < n and rooms[i][0] >= preferred:
+                roomId, size = rooms[i]
+                f2.add(size, -roomId)
+                i += 1
+            if i == 0: continue
+            roomtotheright = -f2.get(minsize+1)
+            if roomtotheright == float('inf'): continue
+            if ans[queryId] < 0 or abs(roomtotheright-preferred) < abs(ans[queryId]-preferred):
+                ans[queryId] = roomtotheright
+        
+        return ans
+        
