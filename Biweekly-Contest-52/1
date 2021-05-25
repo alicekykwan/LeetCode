@@ -1,0 +1,11 @@
+class Solution:
+    def sortSentence(self, s: str) -> str:
+        s = s.split(' ')
+        n = len(s)
+        ans = [None] * n
+        for word in s:
+            m = len(word)
+            wordonly = word[:m-1]
+            idx = int(word[m-1])
+            ans[idx-1] = wordonly
+        return ' '.join(ans)
