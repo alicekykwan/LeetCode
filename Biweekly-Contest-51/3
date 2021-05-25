@@ -1,0 +1,9 @@
+class Solution:
+    def maximumElementAfterDecrementingAndRearranging(self, arr: List[int]) -> int:
+        c = Counter(arr)
+        vals = sorted([(val, count) for val, count in c.items()])
+        ans = 0
+        for val, count in vals:
+            ans += count
+            ans = min(ans, val)
+        return ans
