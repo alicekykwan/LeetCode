@@ -1,0 +1,12 @@
+class Solution:
+    def subsetXORSum(self, nums: List[int]) -> int:
+        ans = 0
+        subsets = [0]
+        for num in nums:
+            n = len(subsets)
+            for i in range(n):
+                newsubset = subsets[i] ^ num
+                subsets.append(newsubset)
+                ans += newsubset
+        return ans
+                
