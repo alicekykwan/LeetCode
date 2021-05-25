@@ -1,0 +1,30 @@
+class Solution:
+    def minSwaps(self, s: str) -> int:
+        
+        ct1 = s.count('1')
+        ct0 = s.count('0')
+        if abs(ct1-ct0) > 1: return -1
+        n = len(s)
+        
+        '''
+        observations:
+        the more frequent one needs to be the first element
+        if both have same cts, need to try both as first element and pick the starting one
+        first element => all even positions need to be the same 
+        record all out of place elements 
+        '''
+        def countOutOfPlace(starting_element):
+            ct = 0
+            for i in range(0, n, 2):
+                if s[i] != starting_element:
+                    ct += 1
+            return ct
+        
+        if ct1 == ct0:
+            return min(countOutOfPlace('0'), countOutOfPlace('1'))
+            
+        if ct1 > ct0:
+            return countOutOfPlace('1')
+        
+        return countOutOfPlace('0')
+            
