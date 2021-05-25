@@ -1,0 +1,37 @@
+class Solution:
+    def canReach(self, s: str, minJump: int, maxJump: int) -> bool:
+        '''
+        find indices of all the zeros
+        
+        cannotreach = [3, 4, 5, 6]
+        canreach = deque([0])
+        i = 0 index in cannotreach
+        curr = popleft from canreach
+        while cannotreach[i] is between minjump and maxjump of curr:
+            cannotreach[i] to canreach
+            increment i
+            
+        
+        '''
+        if s[-1] != '0': return False
+        zeros = []
+        for i, num in enumerate(list(s)):
+            if num == '0':
+                zeros.append(i)
+        
+        canreach = deque([0])
+        cannotreach = zeros[1:]
+        n = len(cannotreach)
+        i = 0
+        while canreach:
+            curr = canreach.popleft()
+            while i < n and curr+minJump > cannotreach[i]:
+                i += 1
+            while i < n and curr+minJump <= cannotreach[i] <= curr+maxJump:
+                canreach.append(cannotreach[i])
+                i += 1
+            if i == n:
+                break
+        
+        return len(s)-1 in canreach
+        
