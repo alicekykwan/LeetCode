@@ -1,0 +1,35 @@
+class Solution:
+    def rearrangeSticks(self, n: int, k: int) -> int:
+        '''
+        placing the shortest stick (nth) - 
+            placing it in front (1 transition) = it becomes visible + num of originally visible sticks
+            placing it anywhere else (n-1 transitions) = num of originally visible sticks
+        
+        f(n, k) =
+        f(n-1, k) * n-1 + f(n-1, k-1) 
+        
+        base cases:
+        f(1, 1) = 1
+        f(1, anythingelse) = 0
+        
+        e.g.
+        f(2, 2) = 
+        f(1, 2) * 1 + f(1, 1) 
+        
+        f(2, 1)=
+        f(1,1) * 0 + f(1, 0)
+        '''
+        M = 10**9 + 7
+        # for n = 1 stick
+        f = [0, 1, 0]
+        
+        for i in range(2, n+1):
+            nextf = [0]
+            for j in range(1, i+1):
+                nextf.append((f[j]*(i-1) + f[j-1]) % M)
+            nextf.append(0)
+            f = nextf
+        
+        return f[k]
+        
+        
