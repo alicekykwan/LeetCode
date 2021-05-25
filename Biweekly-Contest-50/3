@@ -1,0 +1,25 @@
+class Solution:
+    def getMaximumXor(self, nums: List[int], maximumBit: int) -> List[int]:
+        '''
+        currXOR = xor all of nums
+        go bit by bit in currXOR
+            if the bit is not set and it's below maximumBit, set it
+            
+        '''
+        
+        currXOR = 0
+        for num in nums:
+            currXOR ^= num
+        
+        n = len(nums)
+        ans = []
+        
+        for i in range(n):
+            k = 0
+            for j in range(maximumBit):
+                if 1 << j & currXOR == 0: 
+                    k += 1 << j
+            ans.append(k)
+            currXOR ^= nums[n-i-1]
+        
+        return ans
