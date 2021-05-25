@@ -1,0 +1,13 @@
+class Solution:
+    def checkZeroOnes(self, s: str) -> bool:
+        g = groupby(s)
+        bestone = 0
+        bestzero = 0
+        for num, group in g:
+            group = list(group)
+            if num == '1':
+                bestone = max(bestone, len(group))
+            else:
+                bestzero = max(bestzero, len(group))
+        
+        return bestone > bestzero
